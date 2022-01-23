@@ -60,12 +60,26 @@ app.get("/api/department/:id", (req, res) => {
 
 
 
-// db.query(`DELETE FROM department WHERE id = ?`, (err, result) => {
-//   if (err) {
-//     console.log(err);
-//   }
-//   console.log(result);
-// });
+app.delete("/api/department/:id", (req, res) => {
+  const sql = `DELETE FROM department WHERE id = ?`;
+  const params = [req.params.id];
+
+  db.query(sql, params, (err, result) => {
+    if (err) {
+      res.statusMessage(400).json({ error: res.message });
+    } else if (!result.affectedRows) {
+      res.json({
+        message: "Department not found",
+      });
+    } else {
+      res.json({
+        message: "deleted",
+        changes: result.affectedRows,
+        id: req.params.id,
+      });
+    }
+  });
+});
 
 /////////DEPARTMENT END/////////////////////
 
@@ -103,12 +117,25 @@ app.get("/api/role/:id", (req, res) => {
   });
 });
 
-// Delete a candidate
-db.query(`DELETE FROM ROLE WHERE id = ?`, (err, result) => {
-  if (err) {
-    console.log(err);
-  }
-  console.log(result);
+app.delete("/api/role/:id", (req, res) => {
+  const sql = `DELETE FROM role WHERE id = ?`;
+  const params = [req.params.id];
+
+  db.query(sql, params, (err, result) => {
+    if (err) {
+      res.statusMessage(400).json({ error: res.message });
+    } else if (!result.affectedRows) {
+      res.json({
+        message: "Role not found",
+      });
+    } else {
+      res.json({
+        message: "deleted",
+        changes: result.affectedRows,
+        id: req.params.id,
+      });
+    }
+  });
 });
 
 ////////////ROLE END/////////////////////
@@ -148,23 +175,38 @@ app.get("/api/employee/:id", (req, res) => {
   });
 });
 
-const sql = `INSERT INTO employee (id, first_name, last_name, role_id, manager_id) 
-              VALUES (?,?,?,?,?)`;
-const params = [1, "Sarak", "Key", 2, 2];
+// const sql = `INSERT INTO employee (id, first_name, last_name, role_id, manager_id) 
+//               VALUES (?,?,?,?,?)`;
+// const params = [1, "Sarak", "Key", 2, 2];
 
-db.query(sql, params, (err, result) => {
-  if (err) {
-    console.log(err);
-  }
-  console.log(result);
-});
-
-// db.query(`DELETE FROM employee WHERE id = ?`,(err, result) => {
+// db.query(sql, params, (err, result) => {
 //   if (err) {
 //     console.log(err);
 //   }
 //   console.log(result);
 // });
+
+
+app.delete("/api/employee/:id", (req, res) => {
+  const sql = `DELETE FROM employee WHERE id = ?`;
+  const params = [req.params.id];
+
+  db.query(sql, params, (err, result) => {
+    if (err) {
+      res.statusMessage(400).json({ error: res.message });
+    } else if (!result.affectedRows) {
+      res.json({
+        message: "Employee not found",
+      });
+    } else {
+      res.json({
+        message: "deleted",
+        changes: result.affectedRows,
+        id: req.params.id,
+      });
+    }
+  });
+});
 
 ////////////EMPLOYEE END/////////////////////
 
