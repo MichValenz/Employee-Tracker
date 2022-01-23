@@ -26,17 +26,47 @@ app.get("/", (req, res) => {
 });
 
 
+
 db.query(`SELECT * FROM department`, (err, rows) => {
   console.log(rows);
 });
+
+db.query(`SELECT * FROM department WHERE department.id = ?`, (err, row) => {
+    if (err) {
+        console.log(err);
+    }
+
+    console.log(row);
+});
+
+
+
 
 db.query(`SELECT * FROM role`, (err, rows) => {
   console.log(rows);
 });
 
+db.query(`SELECT * FROM role WHERE role.id = ?`, (err, row) => {
+  if (err) {
+    console.log(err);
+  }
+  console.log(row);
+});
+
+
+
 db.query(`SELECT * FROM employee`, (err, rows) => {
   console.log(rows);
 });
+
+db.query(`SELECT * FROM employee WHERE employee.id = ?`, (err, row) => {
+  if (err) {
+    console.log(err);
+  }
+  console.log(row);
+});
+
+
 
 
 app.use((req, res) => {
