@@ -18,7 +18,7 @@ const db = mysql.createConnection(
 
 
 
-/// the query, GET and POST section/////
+//////// the query, GET, DELETE, and POST section////////
 app.get("/", (req, res) => {
   res.json({
     message: "Hello World",
@@ -26,45 +26,147 @@ app.get("/", (req, res) => {
 });
 
 
+/////////DEPARTMENT///////////////
+app.get("/api/department", (req, res) => {
+  const sql = `SELECT * FROM department`;
 
-db.query(`SELECT * FROM department`, (err, rows) => {
-  console.log(rows);
-});
-
-db.query(`SELECT * FROM department WHERE department.id = ?`, (err, row) => {
+  db.query(sql, (err, rows) => {
     if (err) {
-        console.log(err);
+      res.status(500).json({ error: err.message });
+      return;
     }
+    res.json({
+      message: "success",
+      data: rows,
+    });
+  });
+});
 
-    console.log(row);
+app.get("/api/department/:id", (req, res) => {
+  const sql = `SELECT * FROM department WHERE id = ?`;
+  const params = [req.params.id];
+
+  db.query(sql, params, (err, row) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: "success",
+      data: row,
+    });
+  });
 });
 
 
 
+// db.query(`DELETE FROM department WHERE id = ?`, (err, result) => {
+//   if (err) {
+//     console.log(err);
+//   }
+//   console.log(result);
+// });
 
-db.query(`SELECT * FROM role`, (err, rows) => {
-  console.log(rows);
+/////////DEPARTMENT END/////////////////////
+
+
+
+/////////ROLE///////////////////////////
+app.get("/api/role", (req, res) => {
+  const sql = `SELECT * FROM role`;
+
+  db.query(sql, (err, rows) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: "success",
+      data: rows,
+    });
+  });
 });
 
-db.query(`SELECT * FROM role WHERE role.id = ?`, (err, row) => {
+app.get("/api/role/:id", (req, res) => {
+  const sql = `SELECT * FROM role WHERE id = ?`;
+  const params = [req.params.id];
+
+  db.query(sql, params, (err, row) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: "success",
+      data: row,
+    });
+  });
+});
+
+// Delete a candidate
+db.query(`DELETE FROM ROLE WHERE id = ?`, (err, result) => {
   if (err) {
     console.log(err);
   }
-  console.log(row);
+  console.log(result);
 });
 
+////////////ROLE END/////////////////////
 
 
-db.query(`SELECT * FROM employee`, (err, rows) => {
-  console.log(rows);
+
+///////////EMPLOYEE/////////////////////
+
+app.get("/api/employee", (req, res) => {
+  const sql = `SELECT * FROM employee`;
+
+  db.query(sql, (err, rows) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: "success",
+      data: rows,
+    });
+  });
 });
 
-db.query(`SELECT * FROM employee WHERE employee.id = ?`, (err, row) => {
+app.get("/api/employee/:id", (req, res) => {
+  const sql = `SELECT * FROM employee WHERE id = ?`;
+  const params = [req.params.id];
+
+  db.query(sql, params, (err, row) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: "success",
+      data: row,
+    });
+  });
+});
+
+const sql = `INSERT INTO employee (id, first_name, last_name, role_id, manager_id) 
+              VALUES (?,?,?,?,?)`;
+const params = [1, "Sarak", "Key", 2, 2];
+
+db.query(sql, params, (err, result) => {
   if (err) {
     console.log(err);
   }
-  console.log(row);
+  console.log(result);
 });
+
+// db.query(`DELETE FROM employee WHERE id = ?`,(err, result) => {
+//   if (err) {
+//     console.log(err);
+//   }
+//   console.log(result);
+// });
+
+////////////EMPLOYEE END/////////////////////
 
 
 
