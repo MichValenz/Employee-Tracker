@@ -2,6 +2,7 @@ const express = require("express");
 const PORT = process.env.PORT || 3001;
 const app = express();
 const mysql = require("mysql2");
+const postValidation = require("./utils/postValidation");
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -81,6 +82,34 @@ app.delete("/api/department/:id", (req, res) => {
   });
 });
 
+app.post("/api/department", ({ body }, res) => {
+  const errors = postValidation(
+    body,
+    "name"
+  );
+  if (errors) {
+    res.status(400).json({ error: errors });
+    return;
+  }
+
+    const sql = `INSERT INTO department (name)
+  VALUES (?)`;
+    const params = [body.name];
+
+    db.query(sql, params, (err, result) => {
+      if (err) {
+        res.status(400).json({ error: err.message });
+        return;
+      }
+      res.json({
+        message: "success",
+        data: body,
+      });
+    });
+
+});
+
+
 /////////DEPARTMENT END/////////////////////
 
 
@@ -138,6 +167,30 @@ app.delete("/api/role/:id", (req, res) => {
   });
 });
 
+app.post("/api/role", ({ body }, res) => {
+  const errors = postValidation(body, "title", "salary", "department_id"
+);
+  if (errors) {
+    res.status(400).json({ error: errors });
+    return;
+  }
+
+  const sql = `INSERT INTO role (title, salary, department_id)
+  VALUES (?,?,?)`;
+  const params = [body.title, body.salary, body.department_id];
+
+  db.query(sql, params, (err, result) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: "success",
+      data: body,
+    });
+  });
+});
+
 ////////////ROLE END/////////////////////
 
 
@@ -145,7 +198,7 @@ app.delete("/api/role/:id", (req, res) => {
 ///////////EMPLOYEE/////////////////////
 
 app.get("/api/employee", (req, res) => {
-  const sql = `SELECT * FROM employee`;
+  const sql = `SELECT employee.*, role.title AS job_title FROM employee LEFT JOIN role ON employee.role_id = role.id`;
 
   db.query(sql, (err, rows) => {
     if (err) {
@@ -160,7 +213,7 @@ app.get("/api/employee", (req, res) => {
 });
 
 app.get("/api/employee/:id", (req, res) => {
-  const sql = `SELECT * FROM employee WHERE id = ?`;
+  const sql = `SELECT employee.*, role.title AS job_role FROM employee LEFT JOIN role ON employee.role_id = role.id WHERE employee.id = ?`;
   const params = [req.params.id];
 
   db.query(sql, params, (err, row) => {
@@ -207,6 +260,32 @@ app.delete("/api/employee/:id", (req, res) => {
     }
   });
 });
+
+
+app.post("/api/employee", ({ body }, res) => {
+  const errors = postValidation(body, "first_name", "last_name", "role_id", "manager_id");
+  if (errors) {
+    res.status(400).json({ error: errors });
+    return;
+  }
+
+  const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
+  VALUES (?,?,?,?)`;
+  const params = [body.first_name, body.last_name, body.role_id, body.manager_id];
+
+  db.query(sql, params, (err, result) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: "success",
+      data: body,
+    });
+  });
+});
+
+
 
 ////////////EMPLOYEE END/////////////////////
 

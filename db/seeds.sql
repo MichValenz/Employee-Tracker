@@ -7,7 +7,7 @@ VALUES
 
 INSERT INTO role (title, salary, department_id)
 VALUES
-('Quality Manager', 35000, 1),
+('Quality Manager', 55000, 1),
 ('Quality Specialist', 3000, 1),
 ('Policy Manager', 40000, 2),
 ('Policy Writer', 38000, 2),
@@ -18,8 +18,8 @@ VALUES
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
 VALUES
 ('Bob', 'Apples', 1, NULL),
-('Sarah', 'Key', 2, NULL),
-('Carlos', 'Rodriuez', 3, NULL),
-('Susana', 'Lopez', 4, NULL),
+('Sarah', 'Key', 2, 1),
+('Carlos', 'Rodriuez', 3, 1),
+('Susana', 'Lopez', 4, 3),
 ('Linda', 'Flores', 5, NULL),
-('Cade', 'Jones', 6, NULL);
+('Cade', 'Jones', 6, 5);
