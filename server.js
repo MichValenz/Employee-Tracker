@@ -116,7 +116,7 @@ app.post("/api/department", ({ body }, res) => {
 
 /////////ROLE///////////////////////////
 app.get("/api/role", (req, res) => {
-  const sql = `SELECT * FROM role`;
+  const sql = `SELECT role.*, department.name AS department FROM role LEFT JOIN department ON role.department_id = department.id`;
 
   db.query(sql, (err, rows) => {
     if (err) {
@@ -131,7 +131,8 @@ app.get("/api/role", (req, res) => {
 });
 
 app.get("/api/role/:id", (req, res) => {
-  const sql = `SELECT * FROM role WHERE id = ?`;
+  const sql = `SELECT role.*, department.name AS department FROM role LEFT JOIN department ON role.department_id = department.id WHERE role.id = ?`;
+
   const params = [req.params.id];
 
   db.query(sql, params, (err, row) => {
