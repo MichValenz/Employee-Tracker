@@ -3,6 +3,7 @@ const PORT = process.env.PORT || 3001;
 const app = express();
 const mysql = require("mysql2");
 const postValidation = require("./utils/postValidation");
+const path = require("path");
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -327,6 +328,10 @@ app.use((req, res) => {
 });
 
 ////End of GET and POST section/////
+
+
+
+
 
 
 

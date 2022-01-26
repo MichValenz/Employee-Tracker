@@ -1,6 +1,7 @@
 const inquirer = require("inquirer");
 const cTable = require("console.table");
-const mysql = require('mysql');
+const mysql = require('mysql2');
+const server = require("./server")
 
 const db = mysql.createConnection(
   {
@@ -12,6 +13,11 @@ const db = mysql.createConnection(
   console.log("Connected to the employee tracker database.")
 
 );
+
+db.connect(function (err) {
+    if (err) throw err;
+    actionPrompt();
+});
 
 function actionPrompt() {
 
@@ -40,7 +46,7 @@ function actionPrompt() {
       })
       .then(function (action) {
         switch (action.chooseAction) {
-          case "view all departments":
+          case "View all departments":
             viewDepartments();
             break;
           case "Cancel":
@@ -49,6 +55,15 @@ function actionPrompt() {
             break;
         }
       });
+}
+
+
+function viewDepartments(){
+    let depSearch = "Select * FROM department";
+    db.empSearch(depSearch, function(err, res) {
+        if(err)throw err;
+        console.table("You're viewing all departments", res)
+    })
 }
 
 
