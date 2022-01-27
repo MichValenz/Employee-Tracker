@@ -162,7 +162,7 @@ function addRole() {
           if (titleInput) {
             return true;
           } else {
-            console.log("Please enter a tile.");
+            console.log("Please enter a title.");
             return false;
           }
         },
@@ -217,6 +217,97 @@ function addRole() {
   }
 
 
+
+
+function addEmployee(){
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "first_name",
+        message: "Enter employee's first name.",
+        validate: (first_name_input) => {
+          if (first_name_input) {
+            return true;
+          } else {
+            console.log("Please enter a first name.");
+            return false;
+          }
+        },
+      },
+      {
+        type: "input",
+        name: "last_name",
+        message: "Enter the employee's last name.",
+        validate: (last_name_input) => {
+          if (last_name_input) {
+            return true;
+          } else {
+            console.log("Please enter a last name.");
+            return false;
+          }
+        },
+      },
+    ])
+
+    .then(answers => {
+      const params = [answers.first_name, answers.last_name]
+
+      const sql = "SELECT role.id, role.title FROM role";
+      db.query(sql, (err, res) => {
+        if (err) throw err;
+
+        const empRole = res.map(({id, title}) => ({ name: title, value: id}));
+        
+        inquirer.prompt([
+          {
+          type: "list",
+          name: "role",
+          message: "Select the employee's role:",
+          choices: empRole
+          }
+        ])
+
+        .then(answer => {
+          const empRole = answer.role;
+          params.push(empRole);
+
+          const mgmSql = "SELECT * FROM employee";
+
+          db.query(mgmSql, (err, res) => {
+          if (err) throw err;
+
+          const managerOptions = res.map(({ id, first_name, last_name}) => ({ name: first_name + " "+ last_name, value: id}));
+
+          inquirer.prompt([
+            {
+              type: "list",
+              name: "empManager",
+              message: "Choose the employee's manager:",
+              choices: managerOptions
+            }
+             ])
+
+            .then(answer => {
+              console.log(answer)
+              const manager = answer.empManager;
+              params.push(manager);
+
+              const empMgSql = "INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)";
+
+              db.query(empMgSql, params, (err, response) => {
+                if (err) throw err;
+                
+
+                viewEmployees();
+               })
+             })
+            
+          })
+        })
+      })
+    })
+};
 
 
 
