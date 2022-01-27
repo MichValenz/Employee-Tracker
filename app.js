@@ -127,8 +127,8 @@ function addDepartment() {
     type: "input",
     name: "depName",
     message: "What department would you like to add?",
-    validate: (depName) => {
-      if (depName) {
+    validate: (depNameInput) => {
+      if (depNameInput) {
         return true;
       } else {
         console.log("Please enter a department name.");
@@ -152,68 +152,70 @@ function addDepartment() {
 
 function addRole() {
 
-  inquirer.prompt([
-    {
-    type: "input",
-    name: "title",
-    message: "What is the role's title?",
-    validate: (title) => {
-      if (title) {
-        return true;
-      } else {
-        console.log("Please enter a tile.");
-        return false;
-      }
-    }
-  },
-  {
-  type: "input",
-  name: "salary",
-  message: "Enter the job role's salary",
-  validate: (salary) => {
-    if (salary) {
-      return true;
-    } else {
-      console.log("Please enter salary.");
-      return false;
-    }
-   }
-  },
-])
-.then(answers => {
-  const params = [answers.title, answers.salary];
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "title",
+        message: "What is the role's title?",
+        validate: (titleInput) => {
+          if (titleInput) {
+            return true;
+          } else {
+            console.log("Please enter a tile.");
+            return false;
+          }
+        },
+      },
+      {
+        type: "input",
+        name: "salary",
+        message: "Enter the job role's salary",
+        validate: (salary) => {
+          if (salary) {
+            return true;
+          } else {
+            console.log("Please enter salary.");
+            return false;
+          }
+        },
+      },
+    ])
+    .then(answers => {
+      const params = [answers.title, answers.salary];
 
+      const depSql = "SELECT name, id FROM department";
 
-  const depSql = "SELECT name, id FROM department";
-
-  db.promise().query(depSql, (err, res) => {
+      db.query(depSql, (err, res) => {
         if (err) throw err;
-  
-    let empDept = data.map(({ name, id}) => ({ name: name, value: id }));
-      
+
+        const empDept = res.map(({ name, id }) => ({ name: name, value: id }));
+
+        inquirer
+          .prompt([
+            {
+              type: "list",
+              name: "empDept",
+              message: "Enter the role's department?",
+              choices: empDept
+            }
+          ])
+
+          .then(answer => {
+            const empDept = answer.empDept;
+            params.push(empDept);
+            const sql = `INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`;
+
+            db.query(sql, params, (err, result) => {
+              if (err) throw err;
+              
+              viewRoles();
+            });
+          });
+      });
     });
+  }
 
-    inquirer.prompt({
-      type: "list",
-      name: "empDept",
-      message: "Enter the role's department?",
-      choices: empDept
-    })
-})
-
-.then(answer => {
-  const dept = answer.dept; 
-  params.push(dept);
-  const sql = `INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`;
-
-  db.query(sql, params, (err, result) => {
-    if (err) throw err;
-    
-    viewRoles();
-  })
-})
-};
- 
 
 
 
