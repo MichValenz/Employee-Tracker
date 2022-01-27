@@ -3,7 +3,7 @@ const PORT = process.env.PORT || 3001;
 const app = express();
 const mysql = require("mysql2");
 const postValidation = require("./utils/postValidation");
-const path = require("path");
+
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -15,17 +15,12 @@ const db = mysql.createConnection(
     password: "gatosgatas31!",
     database: "empTracker",
   },
-  console.log("Connected to the election database.")
+  console.log("Connected to the employee1 database.")
 );
 
 
 
 //////// the query, GET, DELETE, and POST section////////
-app.get("/", (req, res) => {
-  res.json({
-    message: "Hello World",
-  });
-});
 
 
 /////////DEPARTMENT///////////////
@@ -230,16 +225,6 @@ app.get("/api/employee/:id", (req, res) => {
   });
 });
 
-// const sql = `INSERT INTO employee (id, first_name, last_name, role_id, manager_id) 
-//               VALUES (?,?,?,?,?)`;
-// const params = [1, "Sarak", "Key", 2, 2];
-
-// db.query(sql, params, (err, result) => {
-//   if (err) {
-//     console.log(err);
-//   }
-//   console.log(result);
-// });
 
 
 app.delete("/api/employee/:id", (req, res) => {

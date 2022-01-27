@@ -5,6 +5,7 @@ VALUES
 ('Call Center');
 
 
+
 INSERT INTO role (title, salary, department_id)
 VALUES
 ('Quality Manager', 55000, 1),

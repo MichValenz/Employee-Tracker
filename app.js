@@ -1,7 +1,8 @@
 const inquirer = require("inquirer");
 const cTable = require("console.table");
 const mysql = require('mysql2');
-const server = require("./server")
+require("console.table")
+
 
 const db = mysql.createConnection(
   {
@@ -14,10 +15,7 @@ const db = mysql.createConnection(
 
 );
 
-db.connect(function (err) {
-    if (err) throw err;
-    actionPrompt();
-});
+
 
 function actionPrompt() {
 
@@ -49,8 +47,12 @@ function actionPrompt() {
           case "View all departments":
             viewDepartments();
             break;
+          case "View all employees":
+            viewEmployees();
+            break;
           case "Cancel":
             cancelTracker();
+            break;
           default:
             break;
         }
@@ -59,18 +61,47 @@ function actionPrompt() {
 
 
 function viewDepartments(){
-    let depSearch = "Select * FROM department";
-    db.empSearch(depSearch, function(err, res) {
-        if(err)throw err;
-        console.table("You're viewing all departments", res)
-    })
+
+  db.promise().query("Select * FROM department")
+  .then(([rows]) => {
+    let departments = rows 
+    
+    // const departmentOptions = departments.map(department => 
+      console.table(rows)
+  })
+    // let depSearch = "Select * FROM department";
+    
+    // db.depSearch(depSearch, function(err, res) {
+    //     if(err)throw err;
+    //     console.table("You're viewing all departments", res)
+    // })
 }
 
 
 
+function viewEmployees() {
+  db.promise()
+    .query(
+      `SELECT employee.*, role.title AS job_title FROM employee LEFT JOIN role ON employee.role_id = role.id`)
+    .then(([rows]) => {
+      let departments = rows;
+
+      // const departmentOptions = departments.map(department =>
+      console.table(rows);
+    });
+  // let depSearch = "Select * FROM department";
+
+  // db.depSearch(depSearch, function(err, res) {
+  //     if(err)throw err;
+  //     console.table("You're viewing all departments", res)
+  // })
+}
+ 
 
 
 
 
 
 
+
+actionPrompt();
