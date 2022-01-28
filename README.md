@@ -1,19 +1,46 @@
-# Employee-Tracker
+ [![License: MIT](https://img.shields.io/static/v1?label=license&message=MIT&color=green)](https://opensource.org/licenses/MIT)
 
-GIVEN a command-line application that accepts user input
-WHEN I start the application
-THEN I am presented with the following options: view all departments, view all roles, view all employees, add a department, add a role, add an employee, and update an employee role
-WHEN I choose to view all departments
-THEN I am presented with a formatted table showing department names and department ids
-WHEN I choose to view all roles
-THEN I am presented with the job title, role id, the department that role belongs to, and the salary for that role
-WHEN I choose to view all employees
-THEN I am presented with a formatted table showing employee data, including employee ids, first names, last names, job titles, departments, salaries, and managers that the employees report to
-WHEN I choose to add a department
-THEN I am prompted to enter the name of the department and that department is added to the database
-WHEN I choose to add a role
-THEN I am prompted to enter the name, salary, and department for the role and that role is added to the database
-WHEN I choose to add an employee
-THEN I am prompted to enter the employee’s first name, last name, role, and manager, and that employee is added to the database
-WHEN I choose to update an employee role
-THEN I am prompted to select an employee to update and their new role and this information is updated in the database
+   
+
+  # Employee-Tracker
+
+  ## Description 
+  The Employee Tracker allows users to track employees, departments, and roles. 
+
+  ![screenshot of terminal](images/screenshot1.jpeg)
+
+  ## Table of Contents
+
+  * [Installation](#Installation)
+  * [Usage](#Usage)
+  * [Contributions](#Contributions)
+  * [Testing](#Testing)
+  * [License](#License)
+  * [Questions](#Questions)
+
+  ## Installation
+  The user must clone the remote repository onto their computer and use the terminal to run the application.
+
+  ## Usage
+  To track employees, departments, and roles.
+
+  ## Contributions
+  No contributions.
+
+  ## Testing 
+  After cloning the remote repository onto your computer open in desired code editor and use the terminal on the app.js file to interact. Test the project by answering the prompt questions and creating a test search.
+
+  ## License 
+  This project has an MIT license.
+  https://opensource.org/licenses/MIT
+
+ 
+  
+
+  ## Questions
+  Need to reach me?
+  * Email: michvalenz27@gmail.com
+  * [GitHub](https://github.com/MichValenz/Employee-Tracker)
+
+
+       

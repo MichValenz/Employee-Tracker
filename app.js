@@ -398,14 +398,17 @@ function editEmployee() {
             db.query(updatedSql, params, (err, res) => {
               if (err) throw err;
 
-              viewEmployees();
+              
             });
-          });
 
-          
+          });
       });
     });
 
+
+
+
+    
   })
 
 
