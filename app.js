@@ -62,6 +62,9 @@ function actionPrompt() {
           case "Add an employee":
             addEmployee();
             break;
+          case "Update an employee role":
+            editEmployee();
+            break;
           case "Cancel":
             cancelTracker();
             break;
@@ -78,16 +81,10 @@ function viewDepartments(){
   .then(([rows]) => {
     let departments = rows 
     
-    // const departmentOptions = departments.map(department => 
       console.table(departments)
       actionPrompt();
   })
-    // let depSearch = "Select * FROM department";
-    
-    // db.depSearch(depSearch, function(err, res) {
-    //     if(err)throw err;
-    //     console.table("You're viewing all departments", res)
-    // })
+
 }
 
 
@@ -142,7 +139,7 @@ function addDepartment() {
   db.query(sql, answer.depName, (err, res) => {
         if (err) throw err;
     console.log("Department has been added");
-      actionPrompt();
+      viewDepartments();
       
       
     });
@@ -197,18 +194,25 @@ function addRole() {
               type: "list",
               name: "empDept",
               message: "Enter the role's department?",
-              choices: empDept
-            }
+              choices: empDept,
+              validate: (empDeptInput) => {
+                if (empDeptInput) {
+                  return true;
+                } else {
+                  console.log("Please select department.");
+                }
+              },
+            },
           ])
 
-          .then(answer => {
+          .then((answer) => {
             const empDept = answer.empDept;
             params.push(empDept);
             const sql = `INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`;
 
             db.query(sql, params, (err, result) => {
               if (err) throw err;
-              
+
               viewRoles();
             });
           });
@@ -259,57 +263,154 @@ function addEmployee(){
 
         const empRole = res.map(({id, title}) => ({ name: title, value: id}));
         
-        inquirer.prompt([
-          {
-          type: "list",
-          name: "role",
-          message: "Select the employee's role:",
-          choices: empRole
-          }
-        ])
-
-        .then(answer => {
-          const empRole = answer.role;
-          params.push(empRole);
-
-          const mgmSql = "SELECT * FROM employee";
-
-          db.query(mgmSql, (err, res) => {
-          if (err) throw err;
-
-          const managerOptions = res.map(({ id, first_name, last_name}) => ({ name: first_name + " "+ last_name, value: id}));
-
-          inquirer.prompt([
+        inquirer
+          .prompt([
             {
               type: "list",
-              name: "empManager",
-              message: "Choose the employee's manager:",
-              choices: managerOptions
-            }
-             ])
+              name: "role",
+              message: "Select the employee's role:",
+              choices: empRole,
+              validate: (roleInput) => {
+                if (roleInput) {
+                  return true;
+                } else {
+                  console.log("Please select a job role.");
+                }
+              },
+            },
+          ])
 
-            .then(answer => {
-              console.log(answer)
-              const manager = answer.empManager;
-              params.push(manager);
+          .then((answer) => {
+            const empRole = answer.role;
+            params.push(empRole);
 
-              const empMgSql = "INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)";
+            const mgmSql = "SELECT * FROM employee";
 
-              db.query(empMgSql, params, (err, response) => {
-                if (err) throw err;
-                
+            db.query(mgmSql, (err, res) => {
+              if (err) throw err;
 
-                viewEmployees();
-               })
-             })
-            
-          })
-        })
+              const managerOptions = res.map(
+                ({ id, first_name, last_name }) => ({
+                  name: first_name + " " + last_name,
+                  value: id,
+                })
+              );
+
+              inquirer
+                .prompt([
+                  {
+                    type: "list",
+                    name: "empManager",
+                    message: "Choose the employee's manager:",
+                    choices: managerOptions,
+                    validate: (managerInput) => {
+                      if (managerInput) {
+                        return true;
+                      } else {
+                        console.log("Please select manager.");
+                      }
+                    },
+                  },
+                ])
+
+                .then((answer) => {
+                  console.log(answer);
+                  const manager = answer.empManager;
+                  params.push(manager);
+
+                  const empMgSql =
+                    "INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)";
+
+                  db.query(empMgSql, params, (err, response) => {
+                    if (err) throw err;
+
+                    viewEmployees();
+                  });
+                });
+            });
+          });
       })
     })
 };
 
+function editEmployee() {
 
+  const empSql = "SELECT * FROM employee";
+
+  db.query(empSql, (err, res) => {
+    if (err) throw err;
+
+    const empOptions = res.map(({ id, first_name, last_name}) => ({ name: first_name + " "+ last_name, value: id}));
+
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        name: "editEmp",
+        message: "Select the employee you'd like to update:",
+        choices: empOptions,
+        validate: (editInput) => {
+          if (editInput) {
+            return true;
+          } else {
+            console.log("Please select employee.");
+          }
+        },
+      },
+    ])
+
+    .then((answer) => {
+      const chosenEmp = answer.editEmp;
+      const params = [];
+      params.push(chosenEmp);
+
+      const roleSql = "SELECT * FROM role";
+      db.query(roleSql, (err, res) => {
+        if (err) throw err;
+
+        const roles = res.map(({ id, title }) => ({ name: title, value: id }));
+
+        inquirer
+          .prompt([
+            {
+              type: "list",
+              name: "role",
+              message: "Select new role:",
+              choices: roles,
+              validate: (roleInput) => {
+                if (roleInput) {
+                  return true;
+                } else {
+                  console.log("Please select role.");
+                }
+              },
+            },
+          ])
+          .then((answer) => {
+            const role = answer.role;
+            params.push(role);
+
+            let updatedEmp = params[0];
+            params[0] = role;
+            params[1] = updatedEmp;
+
+            const updatedSql = "UPDATE employee SET role_id = ? WHERE id = ?";
+            db.query(updatedSql, params, (err, res) => {
+              if (err) throw err;
+
+              viewEmployees();
+            });
+          });
+
+          
+      });
+    });
+
+  })
+
+
+
+}
 
 
 
