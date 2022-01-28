@@ -390,29 +390,23 @@ function editEmployee() {
             const role = answer.role;
             params.push(role);
 
-            let updatedEmp = params[0];
-            params[0] = role;
-            params[1] = updatedEmp;
+            let updatedEmp = params[0]; params[0] = role; params[1] = updatedEmp;
 
             const updatedSql = "UPDATE employee SET role_id = ? WHERE id = ?";
             db.query(updatedSql, params, (err, res) => {
               if (err) throw err;
 
-              
+              viewEmployees();
             });
 
           });
       });
     });
-
-
-
-
-    
   })
+}
 
-
-
+function cancelTracker() {
+  db.end();
 }
 
 
